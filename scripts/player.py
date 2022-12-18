@@ -5,6 +5,7 @@ import inputs
 
 pygame.init()
 
+
 class Player:
     def __init__(self):
         self.images = resources.SpriteSheet("resources/player.png").load_strip((0, 0, 13, 23), 4,
@@ -13,7 +14,7 @@ class Player:
             self.images[self.images.index(image)] = pygame.transform.scale(image, (39, 69))
         self.rect = self.images[0].get_rect(topleft=(10, 10))
         self.currentImage = self.images[0]
-        self.vel = (0,0)
+        self.vel = (0, 0)
         self.animationCycle = 0
         self.speed = 3
         self.a, self.d = False, False
@@ -45,22 +46,17 @@ class Player:
                 self.currentImage = self.images[index]
         else:
             self.vel = 0
-             
+
         self.rect.x += self.vel
 
-        
-        if self.rect.x <= 0 or self.rect.x > settings.dimensions[0] - 39:
+        if self.rect.x <= -1 or self.rect.x > settings.dimensions[0] - 15:
             self.rect.x -= self.vel
             self.vel = 0
-            
-        
+
         if not self.vel == 0:
             self.progressAnimation()
         else:
             self.cancelAnimation()
-
-
-        
 
     def progressAnimation(self):
         if self.animationCycle > 100:

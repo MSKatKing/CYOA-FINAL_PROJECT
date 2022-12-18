@@ -10,15 +10,11 @@ pygame.init()
 class States(Enum):
     MAINMENU = 0
     MAINGAME = 1
-    PAUSE = 1.1
-    INVENTORY = 1.2
-    CHESTOPEN = 1.3
+    FOREST = 1.01
     BOSS = 1.4
     ENDGAMEWIN = 2.1
     ENDGAMELOSE = 2.2
     OPTIONS = 3
-    CHARACTERCUSTOM = 4
-    CHARACTERCUSTOMP2 = 4.1
 
 
 class Text:
@@ -38,9 +34,9 @@ class Text:
 
 class TextBox:
     def __init__(self, line1, line2, line3):
-        self.txts = [Text(line1, (50, 475), (0, 0, 0)), Text(line2, (50, 500), (0, 0, 0)),
-                     Text(line3, (50, 525), (0, 0, 0))]
-        self.animation = 0
+        self.txts = [Text(line1, (75, 475), (0, 0, 0)), Text(line2, (75, 500), (0, 0, 0)),
+                     Text(line3, (75, 525), (0, 0, 0))]
+        self.image = images.Image("resources/textbox.png", (25, 450), (850, 125), 0)
 
     def setTextL3(self, text):
         self.txts[2] = Text(text, (50, 525), (0, 0, 0))
@@ -49,9 +45,7 @@ class TextBox:
         self.txts[0] = Text(text, (50, 475), (0, 0, 0))
 
     def update(self):
-        if self.animation < 50:
-            self.animation += 1
-        pygame.draw.rect(settings.window, (255, 255, 255), (25, 450-self.animation, 850, 100))
+        self.image.update()
         for txt in self.txts:
             txt.update()
 

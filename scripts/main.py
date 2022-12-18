@@ -38,6 +38,7 @@ settings.window = pygame.display.set_mode(settings.dimensions, pygame.RESIZABLE)
 pygame.display.set_caption("Choose Your Own Adventure")
 
 settings.player = player.Player()
+pygame.display.set_icon(settings.player.images[0])
 
 settings.state = resources.States.MAINGAME
 settings.running = True
