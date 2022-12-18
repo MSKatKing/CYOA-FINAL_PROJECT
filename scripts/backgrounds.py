@@ -253,7 +253,9 @@ def updateMainGame():
                 time = Time.NIGHT
 
         case InStates.FOREST:
-
+            if not wait: resources.TextBox("... You entered the forest ...",
+                              "... You walk around for a while until you find an abandoned camp ...",
+                              "... You can either sleep in the tent, rekindle the fire, or look for sticks ...")
 
         case InStates.TEXTLR2:
             resources.TextBox("... You decide to keep walking ...",

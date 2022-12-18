@@ -61,6 +61,10 @@ while settings.running:
         case resources.States.OPTIONS:
             if animations.slideAnim:
                 animations.slideAnimProgress()
+        case resources.States.FOREST:
+            backgrounds.updateMainGame()
+            if animations.slideAnim:
+                animations.slideAnimProgress()
 
 
     # Update Inputs, Clock, and Display
