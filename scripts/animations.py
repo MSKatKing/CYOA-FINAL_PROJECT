@@ -1,11 +1,10 @@
 import pygame
 import settings
+import resources
 
 slideAnim = False
-slideAnimReverse = False
-slideAnimOffset = 900
+slideAnimOffset = settings.dimensions[0]
 nextState = None
-
 
 def slideAnimation(state):
     global slideAnim, nextState
@@ -15,36 +14,32 @@ def slideAnimation(state):
 
 
 def slideAnimProgress():
-    global slideAnimOffset, slideAnim, slideAnimReverse, nextState
+    global slideAnimOffset, slideAnim, nextState
     if slideAnim:
-        if slideAnimReverse:
-            slideAnimOffset -= 30
-            pygame.draw.rect(settings.window, (0, 0, 0), (slideAnimOffset, 0, 900, 600))
-            if slideAnimOffset <= -900:
-                slideAnim = False
-                slideAnimReverse = False
-                slideAnimOffset = 900
-                nextState = None
-        else:
-            slideAnimOffset -= 30
-            pygame.draw.rect(settings.window, (0, 0, 0), (slideAnimOffset, 0, 900, 600))
-            if slideAnimOffset <= 0:
-                slideAnimReverse = True
-                settings.state = nextState
+        slideAnimOffset -= 30
+        pygame.draw.rect(settings.window, (0, 0, 0), (slideAnimOffset, 0, settings.dimensions[0], settings.dimensions[1]))
+        if slideAnimOffset <= 0:
+            settings.state = nextState
+        if slideAnimOffset <= -settings.dimensions[0]:
+            slideAnim = False
+            slideAnimOffset = settings.dimensions[0]
+            nextState = None
 
 battleAnim = False
 battleAnimReverse = False
 battleAnimOffset = (settings.dimensions[0]/2, settings.dimensions[1]/2)
 battleAnimSize = 1
 count = 0
+battleState = None
 
-def battleAnimation():
-    global battleAnim
+def battleAnimation(state):
+    global battleAnim, battleState
     battleAnim = True
+    battleState = state
     battleAnimProgress()
 
 def battleAnimProgress():
-    global battleAnim, battleAnimReverse, battleAnimOffset, battleAnimSize, count
+    global battleAnim, battleAnimReverse, battleAnimOffset, battleAnimSize, count, battleState
     if battleAnim:
         pygame.draw.circle(settings.window, (0, 0, 0), battleAnimOffset, battleAnimSize)
         if battleAnimReverse:
@@ -54,9 +49,11 @@ def battleAnimProgress():
                 battleAnimReverse = False
                 battleAnimSize = 1
                 count = 0
+                battleState = None
         else:
             battleAnimSize += 15
             if battleAnimSize >= 600:
                 count += 1
                 if count >= 40:
                     battleAnimReverse = True
+                    settings.state = battleState

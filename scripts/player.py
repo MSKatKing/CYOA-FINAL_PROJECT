@@ -14,6 +14,9 @@ class Player:
             self.images[self.images.index(image)] = pygame.transform.scale(image, (39, 69))
         self.rect = self.images[0].get_rect(topleft=(10, 10))
         self.currentImage = self.images[0]
+        self.health = 100
+        self.damage = 6
+        self.damageAdder = 0
         self.vel = (0, 0)
         self.animationCycle = 0
         self.speed = 3

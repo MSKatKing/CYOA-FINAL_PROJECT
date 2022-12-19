@@ -10,22 +10,8 @@ import enemies
 
 # TODO:
 '''
-- add player
-    - add sprite
-    - add movement
-    - add animation(maybe)
-- add main menu
-    - add character customization
-- add gamestates
-    - main menu
-    - options
-    - game
-    - end (win)
-    - end (lose)
 - add good art
     - medium priority
-    - player + animation
-    - title
     - animal sprites
     - main boss sprite
     - item sprites (maybe)
@@ -40,7 +26,7 @@ pygame.display.set_caption("Choose Your Own Adventure")
 settings.player = player.Player()
 pygame.display.set_icon(settings.player.images[0])
 
-settings.state = resources.States.MAINGAME
+settings.state = resources.States.MAINMENU
 settings.running = True
 while settings.running:
 
@@ -65,6 +51,10 @@ while settings.running:
             backgrounds.updateMainGame()
             if animations.slideAnim:
                 animations.slideAnimProgress()
+        case resources.States.BATTLE:
+            backgrounds.updateMainGame()
+            if animations.battleAnim:
+                animations.battleAnimProgress()
 
 
     # Update Inputs, Clock, and Display

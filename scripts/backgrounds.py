@@ -1,29 +1,13 @@
-import pygame
-import settings
+from StoryFrames import *
+from settings import *
 import images
+import pygame
 import random
 import resources
 import animations
-from enum import Enum
-import inputs
 
 x = settings.dimensions[0]
 y = settings.dimensions[1]
-
-
-class Time(Enum):
-    NOON = 0
-    SUNSET = 1
-    SUNRISE = 2
-    NIGHT = 3
-
-
-times = {Time.NOON: "noon",
-         Time.SUNSET: "sunset",
-         Time.SUNRISE: "sunrise",
-         Time.NIGHT: "night"}
-
-time = Time.SUNRISE
 
 # MAIN MENU ------------------------------------------------------------------------------------------
 MMTreesLayer1 = []
@@ -100,47 +84,7 @@ def updateMainMenu():
 backButton = resources.Button("quit_button", (10, 10), (92, 34))
 
 
-class InStates(Enum):
-    BEGIN = 0.0
-    TEXT = 0.1
-    TEXT2 = 0.2
-    TEXT3 = 0.3
-    TEXT4 = 0.4
-    STAYPUT = 1.0
-    TEXTC11 = 1.1
-    TEXTC12 = 1.2
-    LEFT = 2.0
-    RIGHT = 3.0
-    TEXTLR1 = 4.1
-    TEXTLR2 = 4.2
-    FOREST = 5.0
-
-
-timerCount = 0
-
-
-def timer(ticks):
-    global timerCount
-    if timerCount > ticks:
-        return True
-    else:
-        timerCount += 1
-        return False
-
-
-def toNextState(newState):
-    global state, wait, timerCount
-    state = newState
-    wait = False
-    timerCount = 0
-
-
-state = InStates.BEGIN
-wait = False
-
-
 def updateMainGame():
-    global state, timerCount, wait, time, times
     if settings.state == resources.States.FOREST:
         backgroundMM(True)
     else:
@@ -148,168 +92,16 @@ def updateMainGame():
     settings.player.rect.y = 400
     settings.player.update()
 
-    match state:
-
-        case InStates.BEGIN:
-            settings.player.lockMovement = True
-            if timer(50):
-                toNextState(InStates.TEXT)
-
-        case InStates.TEXT:
-            resources.TextBox("Controls:",
-                              "Press enter to continue text boxes...",
-                              "A and D to move the player, W to enter dark spots.").update()
-            if inputs.inputs["enter"]:
-                toNextState(InStates.TEXT2)
-
-        case InStates.TEXT2:
-            if timer(75):
-                resources.TextBox("... You wake up in a mysterious land ...",
-                                  "... You have memories of you driving a truck ...",
-                                  "... Now you sit on this dirt road, with no truck in sight ...").update()
-            if inputs.inputs["enter"]:
-                toNextState(InStates.TEXT3)
-
-        case InStates.TEXT3:
-            if timer(75):
-                resources.TextBox("... There is a thick forest on either side of the road ...",
-                                  "... You realize you have a choice ...",
-                                  "... You can either go left, right, or stay put ...").update()
-            if inputs.inputs["enter"]:
-                toNextState(InStates.TEXT4)
-
-        case InStates.TEXT4:
-            if timer(75) and not wait:
-                resources.TextBox("... To go left, use A to move ...",
-                                  "... To go right, use D to move ...",
-                                  "... To stay put, press S ...").update()
-            if inputs.inputs["enter"]:
-                wait = True
-                settings.player.lockMovement = False
-            if inputs.inputs["s"]:
-                toNextState(InStates.STAYPUT)
-            if settings.player.rect.x < 1:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.LEFT)
-                time = Time.SUNSET
-            if settings.player.rect.x > settings.dimensions[0] - 39:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.RIGHT)
-                time = Time.SUNSET
-
-        case InStates.LEFT:
-            if not wait:
-                resources.TextBox("... You decided to go left. ...",
-                                  f"... You travel ten miles over the course of 5 hours. It is now {times[time]}. ...",
-                                  "... Where you stop seems to be exactly where you started. ...").update()
-            else:
-                resources.TextBox("... You can either sleep on the road, ...",
-                                  "... go into the forest, ...",
-                                  "... or keep walking. ...").update()
-            if inputs.inputs["enter"]:
-                if wait:
-                    toNextState(InStates.TEXTLR1)
-                wait = True
-
-        case InStates.RIGHT:
-            settings.player.lockMovement = True
-            settings.player.rect.x = settings.dimensions[0] / 2
-            if not wait:
-                resources.TextBox("... You decided to go right. ...",
-                                  f"... You travel ten miles over the course of 5 hours. It is now {times[time]}. ...",
-                                  "... Where you stop seems to be exactly where you started. ...").update()
-            else:
-                resources.TextBox("... You can either sleep on the road, ...",
-                                  "... go into the forest, ...",
-                                  "... or keep walking. ...").update()
-            if inputs.inputs["enter"]:
-                if wait:
-                    toNextState(InStates.TEXTLR1)
-                else:
-                    wait = True
-
-        case InStates.TEXTLR1:
-            if not wait:
-                settings.player.lockMovement = True
-                resources.TextBox("... To sleep on the road, press S ...",
-                                  "... To go into the forest, press W ...",
-                                  "... To keep walking, use A and D").update()
-            if inputs.inputs["enter"]:
-                wait = True
-                settings.player.lockMovement = False
-            if inputs.inputs["s"]:
-                toNextState(InStates.TEXTC12)
-                wait = True
-            if inputs.inputs["w"]:
-                animations.slideAnimation(resources.States.FOREST)
-                toNextState(InStates.FOREST)
-            if settings.player.rect.x < 1:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.TEXTLR2)
-                time = Time.NIGHT
-            if settings.player.rect.x > settings.dimensions[0] - 39:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.TEXTLR2)
-                time = Time.NIGHT
-
-        case InStates.FOREST:
-            if not wait: resources.TextBox("... You entered the forest ...",
-                              "... You walk around for a while until you find an abandoned camp ...",
-                              "... You can either sleep in the tent, rekindle the fire, or look for sticks ...")
-
-        case InStates.TEXTLR2:
-            resources.TextBox("... You decide to keep walking ...",
-                              "...  ...",
-                              "... You eventually pass out from exhaustion ...").update()
-            if inputs.inputs["enter"]:
-                animations.slideAnimation(resources.States.ENDGAMELOSE)
-
-        case InStates.STAYPUT:
-            resources.TextBox("",
-                              "... You decide to stay put ...",
-                              "").update()
-            if inputs.inputs["enter"]:
-                toNextState(InStates.TEXTC11)
-
-        case InStates.TEXTC11:
-            time = Time.SUNSET
-            if timer(75) and not wait:
-                resources.TextBox(f"... It is now {times[time]} ...",
-                                  "... You can either go left with A or right with D ...",
-                                  "... or, you can stay put with S ...").update()
-            if inputs.inputs["enter"]:
-                wait = True
-                settings.player.lockMovement = False
-            if inputs.inputs["s"]:
-                toNextState(InStates.TEXTC12)
-            if settings.player.rect.x < 0:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.LEFT)
-                time = Time.NIGHT
-            if settings.player.rect.x > settings.dimensions[0] - 39:
-                animations.slideAnimation(resources.States.MAINGAME)
-                toNextState(InStates.RIGHT)
-                time = Time.NIGHT
-
-        case InStates.TEXTC12:
-            time = Time.NIGHT
-            if timer(75) and not wait:
-                resources.TextBox(f"... It is now {times[time]} ...",
-                                  "... You are super tired, and decide to fall asleep ...",
-                                  "").update()
-            if wait:
-                resources.TextBox(f"... While you are sleeping, you are eaten by wolves ...",
-                                  "",
-                                  "... YOU LOST ...").update()
-            if inputs.inputs["enter"]:
-                if wait:
-                    animations.slideAnimation(resources.States.ENDGAMELOSE)
-                wait = True
+    inState()
 
     if animations.slideAnim:
         animations.slideAnimProgress()
 
     if backButton.update():
         animations.slideAnimation(resources.States.MAINMENU)
+
+
+def battleBackground():
+    settings.window.fill((255, 255, 255))
 
 # END SCREEN ------------------------------------------------------------------------------------------

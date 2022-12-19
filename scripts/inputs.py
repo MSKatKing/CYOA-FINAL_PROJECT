@@ -9,6 +9,7 @@ inputs = {
     "s": False,
     "d": False,
     "e": False,
+    "f": False,
     "up": False,
     "down": False,
     "left": False,
@@ -52,6 +53,8 @@ def updateInputs():
                 inputs["enter"] = True
             if event.key == pygame.K_a:
                 inputs["a"] = True
+            if event.key == pygame.K_f:
+                inputs["f"] = True
             if event.key == pygame.K_s:
                 inputs["s"] = True
             if event.key == pygame.K_d:
@@ -75,6 +78,8 @@ def updateInputs():
                 inputs["a"] = False
             if event.key == pygame.K_s:
                 inputs["s"] = False
+            if event.key == pygame.K_f:
+                inputs["f"] = False
             if event.key == pygame.K_d:
                 inputs["d"] = False
             if event.key == pygame.K_w:
