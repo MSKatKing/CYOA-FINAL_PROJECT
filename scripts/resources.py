@@ -193,10 +193,12 @@ class Battle:
             else:
                 if self.winner == settings.player:
                     TextBox("", "You won the battle!", "").update()
-                    if self.count >= 100:
+                    if inputs.inputs["enter"]:
                         animations.battleAnimation(States.MAINGAME)
                 else:
                     TextBox("", "You lost the battle!", "").update()
+                    if inputs.inputs["enter"]:
+                        animations.battleAnimation(States.ENDGAMELOSE)
 
         else:
             if animations.battleAnim:
