@@ -1,3 +1,5 @@
+import math
+
 import StoryFrames
 import settings
 import images
@@ -101,7 +103,27 @@ def updateMainGame():
         animations.slideAnimation(resources.States.MAINMENU)
 
 
+count = 0
+
+
 def battleBackground():
-    settings.window.fill((255, 255, 255))
+    global count
+    settings.window.fill(((math.cos(count) * 10) + 50, (math.cos(count) * 10) + 50, (math.cos(count) * 10) + 50))
+    settings.player.update()
+    StoryFrames.inState()
+    count += 0.1
+
+
+def loseBackground():
+    settings.window.fill((200, 15, 15))
+    resources.Text("YOU LOST", (settings.dimensions[0]/2,settings.dimensions[1]/2), (255, 0, 0), True, 64).update()
+    if backButton.update():
+        animations.slideAnimation(resources.States.MAINMENU)
+
+def winBackground():
+    settings.window.fill((15, 200, 15))
+    resources.Text("YOU WIN", (settings.dimensions[0]/2,settings.dimensions[1]/2), (0, 255, 0), True, 64).update()
+    if backButton.update():
+        animations.slideAnimation(resources.States.MAINMENU)
 
 # END SCREEN ------------------------------------------------------------------------------------------

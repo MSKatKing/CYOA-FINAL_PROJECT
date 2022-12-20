@@ -42,6 +42,11 @@ while settings.running:
             if animations.battleAnim:
                 animations.battleAnimProgress()
         case resources.States.ENDGAMEWIN:
+            backgrounds.winBackground()
+            if animations.slideAnim:
+                animations.slideAnimProgress()
+        case resources.States.ENDGAMELOSE:
+            backgrounds.loseBackground()
             if animations.slideAnim:
                 animations.slideAnimProgress()
         case resources.States.OPTIONS:
@@ -52,7 +57,7 @@ while settings.running:
             if animations.slideAnim:
                 animations.slideAnimProgress()
         case resources.States.BATTLE:
-            backgrounds.updateMainGame()
+            backgrounds.battleBackground()
             if animations.battleAnim:
                 animations.battleAnimProgress()
 

@@ -31,8 +31,9 @@ class InStates(Enum):
     DONOTHING = lambda: doNothing.update()
     RUINBATTLE = lambda: ruinBattle.update()
     RUINBATTLETEXT = lambda: ruinBattleText.update()
-    FORESTBATTLETEXT = lambda: forestBattleTest.update()
+    FORESTBATTLETEXT = lambda: forestBattleText.update()
     FORESTBATTLE = lambda: forestBattle.update()
+    RETURNTOFIRE = lambda: returnToFire.update()
 
 
 timerCount = 0
@@ -69,7 +70,6 @@ def checkPlayerRight():
 
 
 def keyPressed(key):
-    print(key, inputs[key])
     if inputs[key]:
         return True
     return False
@@ -101,9 +101,9 @@ def setPlayerDamageAdder(damage, nextState):
     toNextState(nextState)
 
 
-battle1 = Battle(enemies.Wolf())
-ruinBattle = Battle(enemies.RuinBoss())
-forestBattle = Battle(enemies.ForestBoss())
+battle1 = Battle(enemies.Wolf(), States.MAINGAME, InStates.RETURNTOFIRE)
+ruinBattle = Battle(enemies.RuinBoss(), States.ENDGAMEWIN, InStates.TEXT)
+forestBattle = Battle(enemies.ForestBoss(), States.ENDGAMEWIN, InStates.TEXT)
 
 text = GameFrame(
     ["Controls:", "Press enter to continue text boxes...", "Other keys will be told when they are needed."],

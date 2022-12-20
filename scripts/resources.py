@@ -21,12 +21,13 @@ class States(Enum):
 
 
 class Text:
-    def __init__(self, txt, dest, color):
+    def __init__(self, txt, dest, color, centered=False, size=16):
         self.txt = txt
-        self.font = pygame.font.Font("resources/pixel_text.ttf", 16)
+        self.font = pygame.font.Font("resources/pixel_text.ttf", size)
         self.color = color
         self.render = self.font.render(txt, False, color)
-        self.rect = self.render.get_rect(topleft=dest)
+        if not centered: self.rect = self.render.get_rect(topleft=dest)
+        else: self.rect = self.render.get_rect(center=dest)
 
     def changeText(self, txt):
         self.render = self.font.render(txt, False, self.color)
@@ -119,7 +120,7 @@ class SpriteSheet:
 
 # ------------------------------------------------------
 class Battle:
-    def __init__(self, opponent):
+    def __init__(self, opponent, nextState, inState):
         self.winner = None
         self.opponentChoice = None
         self.opponent = opponent
@@ -129,7 +130,12 @@ class Battle:
         self.moveOn = False
         self.moveOn2 = False
         self.count = 0
+        self.state = nextState
+        self.nextInstate = inState
     def update(self):
+        settings.player.rect.x = 30
+        settings.player.rect.y = settings.dimensions[1] / 2
+        self.opponent.update()
         if settings.state == States.BATTLE:
             if not self.battle:
                 TextBox("", f"Oh no! You have encountered a {self.opponent.name}", "").update()
@@ -149,7 +155,6 @@ class Battle:
                         self.opponentChoice = random.randint(0, 1)
                         settings.player.health += 5
                 else:
-                    print("moveon")
                     if not self.moveOn:
                         if self.playerChoice == 0:
                             if self.opponentChoice == 1:
@@ -165,7 +170,6 @@ class Battle:
                             if inputs.inputs["enter"]:
                                 self.moveOn = True
                     else:
-                        print("moveon2")
                         if not self.moveOn2:
                             if self.opponentChoice == 0:
                                 if self.playerChoice == 0:
@@ -194,7 +198,8 @@ class Battle:
                 if self.winner == settings.player:
                     TextBox("", "You won the battle!", "").update()
                     if inputs.inputs["enter"]:
-                        animations.battleAnimation(States.MAINGAME)
+                        animations.battleAnimation(self.state)
+                        self.nextInstate()
                 else:
                     TextBox("", "You lost the battle!", "").update()
                     if inputs.inputs["enter"]:
@@ -213,10 +218,9 @@ class Battle:
 class Entity:
     def __init__(self, image, location, damage, health, name = "unnamed_entity"):
         self.image = image
-        self.rect = image.get_rect(topleft=location)
+        self.rect = image.get_rect(center=location)
         self.maxHealth = health
         self.health = health
-        print(self.maxHealth)
         self.damage = damage
         self.name = name
 
