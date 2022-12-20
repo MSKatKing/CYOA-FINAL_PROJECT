@@ -101,9 +101,9 @@ def setPlayerDamageAdder(damage, nextState):
     toNextState(nextState)
 
 
-battle1 = Battle(settings.player, enemies.Wolf())
-ruinBattle = Battle(settings.player, enemies.RuinBoss())
-forestBattle = Battle(settings.player, enemies.ForestBoss())
+battle1 = Battle(enemies.Wolf())
+ruinBattle = Battle(enemies.RuinBoss())
+forestBattle = Battle(enemies.ForestBoss())
 
 text = GameFrame(
     ["Controls:", "Press enter to continue text boxes...", "Other keys will be told when they are needed."],

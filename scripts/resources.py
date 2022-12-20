@@ -41,6 +41,7 @@ class TextBox:
                      Text(line3, (75, 525), (0, 0, 0))]
         self.image = images.Image("resources/textbox.png", (25, 450), (850, 125), 0)
         self.anim = 25
+        self.textY = (475, 500, 525)
 
     def setTextL3(self, text):
         self.txts[2] = Text(text, (50, 525), (0, 0, 0))
@@ -54,6 +55,7 @@ class TextBox:
         self.image.imageRect.y = 450 + self.anim
         self.image.update()
         for txt in self.txts:
+            txt.rect.y = self.textY[self.txts.index(txt)] + self.anim
             txt.update()
 
 
@@ -117,10 +119,9 @@ class SpriteSheet:
 
 # ------------------------------------------------------
 class Battle:
-    def __init__(self, player, opponent):
+    def __init__(self, opponent):
         self.winner = None
         self.opponentChoice = None
-        self.player = player
         self.opponent = opponent
         self.battle = False
         self.battleOver = False
@@ -141,12 +142,14 @@ class Battle:
                         self.playerChoice = 0
                         self.opponentChoice = random.randint(0, 1)
                         if self.opponentChoice == 0:
-                            self.player.health -= self.opponent.damage
-                            self.opponent.health -= self.player.damage + self.player.damageAdder
+                            settings.player.health -= self.opponent.damage
+                            self.opponent.health -= settings.player.damage + settings.player.damageAdder
                     if inputs.inputs["d"]:
                         self.playerChoice = 1
                         self.opponentChoice = random.randint(0, 1)
+                        settings.player.health += 5
                 else:
+                    print("moveon")
                     if not self.moveOn:
                         if self.playerChoice == 0:
                             if self.opponentChoice == 1:
@@ -154,7 +157,7 @@ class Battle:
                                 if inputs.inputs["enter"]:
                                     self.moveOn = True
                             else:
-                                TextBox("", f"You hit the {self.opponent.name} for {self.player.damage + self.player.damageAdder} health!", "").update()
+                                TextBox("", f"You hit the {self.opponent.name} for {settings.player.damage + settings.player.damageAdder} health!", "").update()
                                 if inputs.inputs["enter"]:
                                     self.moveOn = True
                         else:
@@ -162,6 +165,7 @@ class Battle:
                             if inputs.inputs["enter"]:
                                 self.moveOn = True
                     else:
+                        print("moveon2")
                         if not self.moveOn2:
                             if self.opponentChoice == 0:
                                 if self.playerChoice == 0:
@@ -169,14 +173,16 @@ class Battle:
                                     if inputs.inputs["enter"]:
                                         self.moveOn2 = True
                                 else:
-                                    TextBox("", f"The {self.opponent.name} hit you for 0 health since you defenced yourself!", "").update()
+                                    TextBox("", f"The {self.opponent.name} hit you for 0 health since you defended yourself!", "").update()
                                     if inputs.inputs["enter"]:
                                         self.moveOn2 = True
+                            else:
+                                self.moveOn2 = True
                         else:
                             if self.opponent.health <= 0:
                                 self.battleOver = True
-                                self.winner = self.player
-                            elif self.player.health <= 0:
+                                self.winner = settings.player
+                            elif settings.player.health <= 0:
                                 self.battleOver = True
                                 self.winner = self.opponent
                             else:
@@ -185,7 +191,7 @@ class Battle:
                                 self.moveOn = False
                                 self.moveOn2 = False
             else:
-                if self.winner == self.player:
+                if self.winner == settings.player:
                     TextBox("", "You won the battle!", "").update()
                     if self.count >= 100:
                         animations.battleAnimation(States.MAINGAME)
