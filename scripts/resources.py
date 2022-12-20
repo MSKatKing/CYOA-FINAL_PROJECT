@@ -232,7 +232,7 @@ class GameFrame:
         if self.condition1[0]():
             self.condition1[1]()
         if self.condition2 is not None:
-            if not self.condition2[0](): self.condition2[1]()
+            if self.condition2[0](): self.condition2[1]()
         if self.condition3 is not None:
             if self.condition3[0](): self.condition3[1]()
         if self.condition4 is not None:
